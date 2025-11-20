@@ -35,18 +35,42 @@ export const useVotingSystem = () => {
         );
     };
 
-    const leadingCandidateId = candidates.reduce((prev, current) =>
-        (prev.votes > current.votes) ? prev : current
-    ).id;
+    const handleAddCandidate = (name, number) => {
+        const newCandidate = {
+            id: Date.now(), // Simple ID generation
+            name,
+            number: parseInt(number),
+            votes: 0
+        };
+        setCandidates((prev) => [...prev, newCandidate]);
+    };
 
-    const isTie = candidates[0].votes === candidates[1].votes;
-    const leaderId = isTie ? null : leadingCandidateId;
+    // Calculate leader
+    const getLeaderId = () => {
+        if (candidates.length === 0) return null;
+
+        const sorted = [...candidates].sort((a, b) => b.votes - a.votes);
+
+        // If only one candidate, they are the leader if they have votes (optional logic, but let's assume yes)
+        // Or if we strictly follow "tie" logic:
+        if (candidates.length === 1) return sorted[0].id;
+
+        // Check for tie between top 2
+        if (sorted[0].votes === sorted[1].votes) {
+            return null; // Tie
+        }
+
+        return sorted[0].id;
+    };
+
+    const leaderId = getLeaderId();
 
     return {
         candidates,
         history,
         handleVote,
         handleUpdateCandidate,
+        handleAddCandidate,
         leaderId
     };
 };

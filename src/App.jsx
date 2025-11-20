@@ -11,16 +11,72 @@ const App = () => {
     history,
     handleVote,
     handleUpdateCandidate,
+    handleAddCandidate,
     leaderId
   } = useVotingSystem();
+
+  const [showAddForm, setShowAddForm] = React.useState(false);
+  const [newName, setNewName] = React.useState('');
+  const [newNumber, setNewNumber] = React.useState('');
+
+  const onAddCandidate = (e) => {
+    e.preventDefault();
+    if (newName && newNumber) {
+      handleAddCandidate(newName, newNumber);
+      setNewName('');
+      setNewNumber('');
+      setShowAddForm(false);
+    }
+  };
 
   return (
     <Layout>
       <Header />
 
-      <div className="flex flex-wrap justify-center gap-6 w-full mb-8">
+      <div className="mb-6 flex justify-center">
+        <button
+          onClick={() => setShowAddForm(!showAddForm)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+        >
+          {showAddForm ? 'Cancelar' : 'Agregar Candidato'}
+        </button>
+      </div>
+
+      {showAddForm && (
+        <form onSubmit={onAddCandidate} className="mb-8 p-4 bg-white rounded-lg shadow-md max-w-md mx-auto">
+          <h3 className="text-lg font-bold mb-4">Nuevo Candidato</h3>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Número</label>
+            <input
+              type="number"
+              value={newNumber}
+              onChange={(e) => setNewNumber(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+          >
+            Guardar
+          </button>
+        </form>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full mb-8 max-w-4xl mx-auto">
         {candidates.map((candidate) => (
-          <div key={candidate.id} className="w-full max-w-xs">
+          <div key={candidate.id} className="w-full">
             <CandidateCard
               candidate={candidate}
               onVote={handleVote}
