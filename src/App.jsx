@@ -15,6 +15,8 @@ const App = () => {
     leaderId
   } = useVotingSystem();
 
+  const totalVotes = candidates.reduce((acc, curr) => acc + curr.votes, 0);
+
   const [showAddForm, setShowAddForm] = React.useState(false);
   const [newName, setNewName] = React.useState('');
   const [newNumber, setNewNumber] = React.useState('');
@@ -51,7 +53,7 @@ const App = () => {
               type="text"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2 text-base"
               required
             />
           </div>
@@ -61,7 +63,7 @@ const App = () => {
               type="number"
               value={newNumber}
               onChange={(e) => setNewNumber(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2 text-base"
               required
             />
           </div>
@@ -74,17 +76,21 @@ const App = () => {
         </form>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full mb-8 max-w-4xl mx-auto">
-        {candidates.map((candidate) => (
-          <div key={candidate.id} className="w-full">
-            <CandidateCard
-              candidate={candidate}
-              onVote={handleVote}
-              onUpdate={handleUpdateCandidate}
-              isLeading={leaderId === candidate.id}
-            />
-          </div>
-        ))}
+      <div className="grid grid-cols-2 gap-4 w-full mb-8 max-w-4xl mx-auto">
+        {candidates.map((candidate) => {
+          const percentage = totalVotes === 0 ? 0 : Math.round((candidate.votes / totalVotes) * 100);
+          return (
+            <div key={candidate.id} className="w-full">
+              <CandidateCard
+                candidate={candidate}
+                percentage={percentage}
+                onVote={handleVote}
+                onUpdate={handleUpdateCandidate}
+                isLeading={leaderId === candidate.id}
+              />
+            </div>
+          );
+        })}
       </div>
 
       <VoteHistory history={history} />

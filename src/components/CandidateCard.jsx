@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Vote, Pencil, Check, X } from 'lucide-react';
 
-const CandidateCard = ({ candidate, onVote, onUpdate, isLeading }) => {
+const CandidateCard = ({ candidate, percentage, onVote, onUpdate, isLeading }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(candidate.name);
   const [editNumber, setEditNumber] = useState(candidate.number);
@@ -23,11 +23,10 @@ const CandidateCard = ({ candidate, onVote, onUpdate, isLeading }) => {
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative overflow-hidden rounded-2xl p-6 backdrop-blur-xl border transition-all duration-300 ${
-        isLeading
-          ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.3)]'
-          : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10'
-      }`}
+      className={`relative overflow-hidden rounded-2xl p-6 backdrop-blur-xl border transition-all duration-300 ${isLeading
+        ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.3)]'
+        : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10'
+        }`}
     >
       {/* Edit Button */}
       <div className="absolute top-4 right-4 z-20">
@@ -58,9 +57,8 @@ const CandidateCard = ({ candidate, onVote, onUpdate, isLeading }) => {
 
       <div className="flex flex-col items-center gap-4">
         <div className="relative">
-          <div className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold border-2 ${
-            isLeading ? 'border-yellow-500 text-yellow-500' : 'border-white/20 text-white/60'
-          }`}>
+          <div className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold border-2 ${isLeading ? 'border-yellow-500 text-yellow-500' : 'border-white/20 text-white/60'
+            }`}>
             {isEditing ? (
               <input
                 type="number"
@@ -69,7 +67,7 @@ const CandidateCard = ({ candidate, onVote, onUpdate, isLeading }) => {
                 className="w-16 bg-transparent text-center outline-none border-b border-white/20 focus:border-white"
               />
             ) : (
-              candidate.number
+              <span className="text-2xl">{percentage}%</span>
             )}
           </div>
           {isLeading && !isEditing && (
@@ -82,7 +80,7 @@ const CandidateCard = ({ candidate, onVote, onUpdate, isLeading }) => {
             </motion.div>
           )}
         </div>
-        
+
         <div className="text-center w-full">
           {isEditing ? (
             <input
@@ -97,7 +95,7 @@ const CandidateCard = ({ candidate, onVote, onUpdate, isLeading }) => {
           <p className="text-sm text-white/50">Candidate #{candidate.number}</p>
         </div>
 
-        <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 my-2">
+        <div className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 my-2">
           {candidate.votes}
         </div>
 
@@ -105,11 +103,10 @@ const CandidateCard = ({ candidate, onVote, onUpdate, isLeading }) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => onVote(candidate.id)}
-          className={`w-full py-3 px-6 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors ${
-            isLeading
-              ? 'bg-yellow-500 text-black hover:bg-yellow-400'
-              : 'bg-white text-black hover:bg-gray-200'
-          }`}
+          className={`w-full py-3 px-6 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors ${isLeading
+            ? 'bg-yellow-500 text-black hover:bg-yellow-400'
+            : 'bg-white text-black hover:bg-gray-200'
+            }`}
         >
           <Vote size={20} />
           Vote Now
