@@ -91,8 +91,11 @@ const App = () => {
       )}
 
       <div className="grid grid-cols-2 gap-4 w-full mb-8 max-w-4xl mx-auto">
-        {candidates.map((candidate) => {
+        {candidates.map((candidate, index) => {
           const percentage = totalVotes === 0 ? 0 : Math.round((candidate.votes / totalVotes) * 100);
+          const colors = ['#F59E0B', '#3B82F6', '#EF4444', '#10B981', '#8B5CF6', '#EC4899', '#6366F1'];
+          const color = colors[index % colors.length];
+
           return (
             <div key={candidate.id} className="w-full">
               <CandidateCard
@@ -101,6 +104,7 @@ const App = () => {
                 onVote={handleVote}
                 onUpdate={handleUpdateCandidate}
                 isLeading={leaderId === candidate.id}
+                color={color}
               />
             </div>
           );
