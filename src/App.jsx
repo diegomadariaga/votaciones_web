@@ -52,6 +52,12 @@ const App = () => {
         </button>
       </div>
 
+      <div className="text-center mb-8">
+        <span className="text-2xl font-bold bg-white/10 px-6 py-3 rounded-full backdrop-blur-sm border border-white/20 text-white">
+          Total Votos: {totalVotes}
+        </span>
+      </div>
+
       {showAddForm && (
         <form onSubmit={onAddCandidate} className="mb-8 p-4 bg-white rounded-lg shadow-md max-w-md mx-auto">
           <h3 className="text-lg font-bold mb-4">Nuevo Candidato</h3>

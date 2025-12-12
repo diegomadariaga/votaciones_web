@@ -57,31 +57,37 @@ const CandidateCard = ({ candidate, percentage, onVote, onUpdate, isLeading }) =
 
       <div className="flex flex-col items-center gap-4">
         <div className="relative">
-          <div className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold border-2 ${isLeading ? 'border-yellow-500 text-yellow-500' : 'border-white/20 text-white/60'
+          <div className={`w-32 h-32 rounded-full flex flex-col items-center justify-center border-4 trantision-all duration-300 ${isLeading
+            ? 'border-yellow-500 text-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.4)]'
+            : 'border-white/20 text-white/80'
             }`}>
             {isEditing ? (
               <input
                 type="number"
                 value={editNumber}
                 onChange={(e) => setEditNumber(e.target.value)}
-                className="w-16 bg-transparent text-center outline-none border-b border-white/20 focus:border-white"
+                className="w-20 bg-transparent text-center outline-none border-b-2 border-white/20 focus:border-white text-2xl font-bold"
               />
             ) : (
-              <span className="text-2xl">{percentage}%</span>
+              <>
+                <span className="text-3xl font-black">{percentage}%</span>
+                <span className="text-xs uppercase tracking-wider opacity-70 mt-1">votos</span>
+                <span className="text-lg font-bold">{candidate.votes}</span>
+              </>
             )}
           </div>
           {isLeading && !isEditing && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute -top-2 -right-2 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-full"
+              className="absolute -top-3 -right-3 bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full shadow-lg"
             >
-              LEADER
+              LÍDER
             </motion.div>
           )}
         </div>
 
-        <div className="text-center w-full">
+        <div className="text-center w-full mt-2">
           {isEditing ? (
             <input
               type="text"
@@ -90,13 +96,11 @@ const CandidateCard = ({ candidate, percentage, onVote, onUpdate, isLeading }) =
               className="w-full bg-transparent text-center text-xl font-bold text-white mb-1 outline-none border-b border-white/20 focus:border-white"
             />
           ) : (
-            <h3 className="text-xl font-bold text-white mb-1">{candidate.name}</h3>
+            <h3 className="text-2xl font-bold text-white mb-1 tracking-tight">
+              <span className="opacity-50 mr-2 text-lg">#{candidate.number}</span>
+              {candidate.name}
+            </h3>
           )}
-          <p className="text-sm text-white/50">Candidate #{candidate.number}</p>
-        </div>
-
-        <div className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 my-2">
-          {candidate.votes}
         </div>
 
         <motion.button
