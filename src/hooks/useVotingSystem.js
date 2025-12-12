@@ -2,8 +2,10 @@ import { useState } from 'react';
 
 export const useVotingSystem = () => {
     const [candidates, setCandidates] = useState([
-        { id: 1, name: 'Candidate A', number: 1, votes: 0 },
-        { id: 2, name: 'Candidate B', number: 2, votes: 0 },
+        { id: 2, name: 'JARA', number: 2, votes: 0 },
+        { id: 5, name: 'KAST', number: 5, votes: 0 },
+        { id: 0, name: 'NULO', number: 0, votes: 0 },
+        { id: 99, name: 'BLANCO', number: 99, votes: 0 },
     ]);
 
     const [history, setHistory] = useState([]);
