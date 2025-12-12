@@ -1,14 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const useVotingSystem = () => {
-    const [candidates, setCandidates] = useState([
+    const initialCandidates = [
         { id: 2, name: 'JARA', number: 2, votes: 0 },
         { id: 5, name: 'KAST', number: 5, votes: 0 },
         { id: 0, name: 'NULO', number: 0, votes: 0 },
         { id: 99, name: 'BLANCO', number: 99, votes: 0 },
-    ]);
+    ];
 
-    const [history, setHistory] = useState([]);
+    const [candidates, setCandidates] = useState(() => {
+        const saved = localStorage.getItem('candidates');
+        return saved ? JSON.parse(saved) : initialCandidates;
+    });
+
+    const [history, setHistory] = useState(() => {
+        const saved = localStorage.getItem('voteHistory');
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    // Save to localStorage whenever state changes
+    useEffect(() => {
+        localStorage.setItem('candidates', JSON.stringify(candidates));
+    }, [candidates]);
+
+    useEffect(() => {
+        localStorage.setItem('voteHistory', JSON.stringify(history));
+    }, [history]);
+
+    const resetVotes = () => {
+        if (window.confirm('¿Estás seguro de que quieres reiniciar todos los votos? Esta acción no se puede deshacer.')) {
+            setCandidates(initialCandidates);
+            setHistory([]);
+            localStorage.removeItem('candidates');
+            localStorage.removeItem('voteHistory');
+        }
+    };
 
     const handleVote = (id) => {
         const candidate = candidates.find((c) => c.id === id);
@@ -82,6 +108,7 @@ export const useVotingSystem = () => {
         handleDeleteVote,
         handleUpdateCandidate,
         handleAddCandidate,
-        leaderId
+        leaderId,
+        resetVotes
     };
 };

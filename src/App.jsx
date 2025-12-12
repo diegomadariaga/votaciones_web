@@ -13,7 +13,8 @@ const App = () => {
     handleUpdateCandidate,
     handleAddCandidate,
     handleDeleteVote,
-    leaderId
+    leaderId,
+    resetVotes
   } = useVotingSystem();
 
   const totalVotes = candidates.reduce((acc, curr) => acc + curr.votes, 0);
@@ -36,12 +37,18 @@ const App = () => {
     <Layout>
       <Header />
 
-      <div className="mb-6 flex justify-center">
+      <div className="mb-6 flex justify-center gap-4">
         <button
           onClick={() => setShowAddForm(!showAddForm)}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
         >
           {showAddForm ? 'Cancelar' : 'Agregar Candidato'}
+        </button>
+        <button
+          onClick={resetVotes}
+          className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+        >
+          Resetear Votos
         </button>
       </div>
 
