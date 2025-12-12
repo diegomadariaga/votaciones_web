@@ -12,6 +12,7 @@ const App = () => {
     handleVote,
     handleUpdateCandidate,
     handleAddCandidate,
+    handleDeleteVote,
     leaderId
   } = useVotingSystem();
 
@@ -93,7 +94,7 @@ const App = () => {
         })}
       </div>
 
-      <VoteHistory history={history} />
+      <VoteHistory history={history} onDelete={handleDeleteVote} />
     </Layout>
   );
 };

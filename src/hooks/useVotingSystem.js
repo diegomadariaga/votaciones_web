@@ -19,12 +19,20 @@ export const useVotingSystem = () => {
 
         // Add to history
         const newVote = {
+            candidateId: candidate.id,
             candidateName: candidate.name,
             candidateNumber: candidate.number,
             timestamp: Date.now(),
         };
 
-        setHistory((prev) => [newVote, ...prev].slice(0, 5));
+        setHistory((prev) => [newVote, ...prev]);
+    };
+
+    const handleDeleteVote = (timestamp, candidateId) => {
+        setHistory((prev) => prev.filter((vote) => vote.timestamp !== timestamp));
+        setCandidates((prev) =>
+            prev.map((c) => (c.id === candidateId ? { ...c, votes: Math.max(0, c.votes - 1) } : c))
+        );
     };
 
     const handleUpdateCandidate = (id, newName, newNumber) => {
@@ -69,6 +77,7 @@ export const useVotingSystem = () => {
         candidates,
         history,
         handleVote,
+        handleDeleteVote,
         handleUpdateCandidate,
         handleAddCandidate,
         leaderId
