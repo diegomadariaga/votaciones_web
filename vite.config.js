@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/votaciones_web/', // <- cambia 'votaciones' si tu repo tiene otro nombre
+  // Use root base on Vercel; keep GitHub Pages path when not on Vercel
+  base: process.env.VERCEL ? '/' : '/votaciones_web/',
   plugins: [react()],
 })
