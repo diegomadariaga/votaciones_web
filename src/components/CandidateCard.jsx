@@ -1,11 +1,54 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Vote, Pencil, Check, X } from 'lucide-react';
+
+const Particle = ({ color }) => {
+  const [coords] = useState(() => {
+    const angle = Math.random() * 360;
+    const distance = Math.random() * 150 + 100; // Increased distance
+    const duration = Math.random() * 0.8 + 0.6; // Longer duration
+    const startScale = Math.random() * 0.8 + 0.8; // Larger particles
+    const rotate = Math.random() * 360; // Calculate rotation once
+
+    return {
+      x: Math.cos(angle * (Math.PI / 180)) * distance,
+      y: Math.sin(angle * (Math.PI / 180)) * distance,
+      duration,
+      startScale,
+      rotate
+    };
+  });
+
+  return (
+    <motion.div
+      initial={{
+        x: 0,
+        y: 0,
+        opacity: 1,
+        scale: coords.startScale,
+        rotate: 0
+      }}
+      animate={{
+        x: coords.x,
+        y: coords.y,
+        opacity: 0,
+        scale: 0,
+        rotate: coords.rotate
+      }}
+      transition={{ duration: coords.duration, ease: "easeOut" }}
+      style={{ backgroundColor: color }}
+      className="absolute w-4 h-4 rounded-full pointer-events-none z-50 shadow-lg" // Slightly larger and shadow
+    />
+  );
+};
 
 const CandidateCard = ({ candidate, percentage, onVote, onUpdate, isLeading, color }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(candidate.name);
   const [editNumber, setEditNumber] = useState(candidate.number);
+
+  /** @type {[Array<{id: string}>, Function]} */
+  const [particles, setParticles] = useState([]);
 
   const handleSave = () => {
     onUpdate(candidate.id, editName, editNumber);
@@ -16,6 +59,21 @@ const CandidateCard = ({ candidate, percentage, onVote, onUpdate, isLeading, col
     setEditName(candidate.name);
     setEditNumber(candidate.number);
     setIsEditing(false);
+  };
+
+  const handleVote = () => {
+    onVote(candidate.id);
+    // Add particles
+    const id = Date.now();
+    const newParticles = Array.from({ length: 25 }).map((_, i) => ({
+      id: `${id}-${i}`
+    }));
+    setParticles(prev => [...prev, ...newParticles]);
+
+    // Clean up particles
+    setTimeout(() => {
+      setParticles(prev => prev.filter(p => !newParticles.find(np => np.id === p.id)));
+    }, 1500);
   };
 
   const radius = 50;
@@ -51,7 +109,7 @@ const CandidateCard = ({ candidate, percentage, onVote, onUpdate, isLeading, col
         )}
       </div>
 
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-4 relative">
         <div className="relative w-40 h-40 flex items-center justify-center">
           {/* Circular Progress SVG */}
           <svg className="absolute w-full h-full transform -rotate-90">
@@ -91,7 +149,14 @@ const CandidateCard = ({ candidate, percentage, onVote, onUpdate, isLeading, col
                 <span className="text-2xl font-bold text-white">{percentage}%</span>
                 <span className="text-xs uppercase tracking-wider text-white/60 mb-1">votos</span>
                 <span className="text-xl font-bold flex items-center gap-1" style={{ color: color }}>
-                  {candidate.votes}
+                  <motion.span
+                    key={candidate.votes}
+                    initial={{ scale: 2.5, color: '#fff' }}
+                    animate={{ scale: 1, color: color }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  >
+                    {candidate.votes}
+                  </motion.span>
                   <Vote size={14} />
                 </span>
               </>
@@ -108,6 +173,15 @@ const CandidateCard = ({ candidate, percentage, onVote, onUpdate, isLeading, col
               Líder
             </motion.div>
           )}
+
+          {/* Particles Container */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <AnimatePresence>
+              {particles.map((particle) => (
+                <Particle key={particle.id} color={color} />
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
 
         <div className="text-center w-full mt-2">
@@ -129,12 +203,12 @@ const CandidateCard = ({ candidate, percentage, onVote, onUpdate, isLeading, col
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => onVote(candidate.id)}
+          onClick={handleVote}
           style={{
             backgroundColor: isLeading ? color : 'white',
             color: isLeading ? 'white' : 'black'
           }}
-          className={`w-full py-3 px-6 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors shadow-lg hover:brightness-110`}
+          className={`w-full py-3 px-6 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors shadow-lg hover:brightness-110 relative overflow-hidden`}
         >
           <Vote size={20} />
           Votar
